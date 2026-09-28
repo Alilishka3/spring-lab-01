@@ -4,6 +4,9 @@ app:
   mail:
     enabled: false
     retry-count: 1
+  pagination:
+    default-size: 10
+    max-size: 50
 logging:
   level:
     kz.iitu: DEBUG

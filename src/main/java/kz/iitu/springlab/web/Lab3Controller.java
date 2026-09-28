@@ -35,6 +35,8 @@ public class Lab3Controller {
         result.put("mailRetryCount", props.mail().retryCount());
         result.put("mailTimeout", props.mail().timeout().toString());
         result.put("mailEnabled", props.mail().enabled());
+        result.put("paginationDefaultSize", props.pagination().defaultSize());
+        result.put("paginationMaxSize", props.pagination().maxSize());
         result.put("serverPort", environment.getProperty("server.port"));
         result.put("activeProfiles", Arrays.asList(environment.getActiveProfiles()));
         result.put("banner", banner.describe());

@@ -11,6 +11,9 @@ app:
     retry-count: 3
     timeout: 5s
     enabled: true
+  pagination:
+    default-size: 20
+    max-size: 100
 logging:
   level:
     kz.iitu: INFO
