@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: spring-lab
+server:
+  port: 8080
+app:
+  owner: Altai Ali
+  group: IT1-2409IS
+  mail:
+    from: no-reply@iitu.kz
+    retry-count: 3
+    timeout: 5s
+    enabled: true
+  pagination:
+    default-size: 20
+    max-size: 100
+logging:
+  level:
+    kz.iitu: INFO
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,env,configprops,conditions
+  endpoint:
+    env:
+      show-values: ALWAYS
+    configprops:
+      show-values: ALWAYS
