@@ -27,6 +27,7 @@ if (Test-Path $bundle) {
     git reset -q
 }
 $ev = Join-Path $root 'rk-evidence'
+$B = 'http://localhost:8080'
 if ($Only -ne 'experiments') { Remove-Item -Recurse -Force $ev -ErrorAction SilentlyContinue }
 New-Item -ItemType Directory -Force -Path $ev | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $ev 'shots') | Out-Null
@@ -132,7 +133,6 @@ if ($Only -ne 'experiments') {
 # =====================================================================
 Note 'run A: default profile'
 $A = Start-App 'runA-default'
-$B = 'http://localhost:8080'
 
 # lab 1
 Req 'lab1.txt' 'GET /api/hello' @("$B/api/hello")
