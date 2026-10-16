@@ -15,12 +15,15 @@ if (-not (Test-Path (Join-Path $wrapperDir 'maven-wrapper.properties'))) {
     New-Item -ItemType Directory -Force -Path $wrapperDir | Out-Null
     Copy-Item (Join-Path $PSScriptRoot 'maven-wrapper.properties') $wrapperDir
 }
-if (-not (Test-Path (Join-Path $root '.git')) -and (Test-Path (Join-Path $PSScriptRoot 'spring-lab.bundle'))) {
-    git init -q
-    git fetch -q (Join-Path $PSScriptRoot 'spring-lab.bundle') '+refs/heads/*:refs/heads/*'
+$bundle = Join-Path $PSScriptRoot 'spring-lab.bundle'
+if (Test-Path $bundle) {
+    if (-not (Test-Path (Join-Path $root '.git'))) {
+        git init -q
+        git remote add origin https://github.com/Alilishka3/spring-lab-01.git
+    }
+    git fetch -q --update-head-ok $bundle '+refs/heads/*:refs/heads/*'
     git symbolic-ref HEAD refs/heads/rk1
     git reset -q
-    git remote add origin https://github.com/Alilishka3/spring-lab-01.git
 }
 $ev = Join-Path $root 'rk-evidence'
 Remove-Item -Recurse -Force $ev -ErrorAction SilentlyContinue
