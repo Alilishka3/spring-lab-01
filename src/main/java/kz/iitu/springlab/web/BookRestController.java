@@ -24,11 +24,9 @@ public class BookRestController {
         return service.findAll(author).stream().limit(limit).toList();
     }
 
-    @GetMapping("/{id}")                                    // 200 or 404
-    public ResponseEntity<Book> find(@PathVariable long id) {
-        return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{id}")                                    // 200, or 404 from ApiExceptionHandler
+    public Book find(@PathVariable long id) {
+        return service.get(id);
     }
 
     @PostMapping                                            // 201 + Location

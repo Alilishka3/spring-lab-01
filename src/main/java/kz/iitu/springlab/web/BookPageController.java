@@ -1,9 +1,12 @@
 package kz.iitu.springlab.web;
 
+import jakarta.validation.Valid;
 import kz.iitu.springlab.catalog.Book;
 import kz.iitu.springlab.catalog.BookService;
+import kz.iitu.springlab.catalog.Genre;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,17 +25,35 @@ public class BookPageController {
         model.addAttribute("books", service.findAll(author));
         model.addAttribute("author", author);
         model.addAttribute("title", "Catalogue");
-        return "books/list";                    // -> templates/books/list.html
+        return "books/list";
+    }
+
+    @GetMapping("/{id}")
+    public String details(@PathVariable long id, Model model) {
+        model.addAttribute("book", service.get(id));     // 404 page via PageExceptionHandler
+        return "books/details";
+    }
+
+    @GetMapping("/new")
+    public String newForm(Model model) {
+        model.addAttribute("form", new BookForm());          // an empty object for th:object
+        model.addAttribute("genres", Genre.values());
+        return "books/form";
     }
 
     @PostMapping
-    public String create(@RequestParam String title,
-                         @RequestParam String author,
-                         @RequestParam int year,
+    public String create(@Valid @ModelAttribute("form") BookForm form,
+                         BindingResult binding,                // immediately after!
+                         Model model,
                          RedirectAttributes redirect) {
-        Book saved = service.create(new Book(null, title, author, year));
+        if (binding.hasErrors()) {
+            model.addAttribute("genres", Genre.values());     // the model again
+            return "books/form";
+        }
+        Book saved = service.create(new Book(null, form.getTitle(), form.getAuthor(),
+                form.getYear(), form.getGenre(), form.getIsbn()));
         redirect.addFlashAttribute("message",
                 "Book «" + saved.title() + "» has been added");
-        return "redirect:/books";               // 302; the browser performs a GET
+        return "redirect:/books";
     }
 }

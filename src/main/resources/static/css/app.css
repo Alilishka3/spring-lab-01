@@ -7,3 +7,11 @@ th { background: #2f5d50; color: #fff; }
 tr:nth-child(even) td { background: #faf8f4; }
 .flash { background: #e3f1ea; border-left: 4px solid #2f5d50; padding: 10px 14px; }
 a { color: #2f5d50; }
+.form { display: grid; gap: 6px; max-width: 460px; }
+.form input, .form select { padding: 8px 10px; border: 1px solid #cfc7b8; border-radius: 6px; font: inherit; }
+.form button { margin-top: 12px; padding: 10px; background: #2f5d50; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+.is-invalid { border-color: #c0392b !important; background: #fff5f4; }
+.error { color: #c0392b; font-size: 0.9em; }
+.alert { background: #fdecea; border-left: 4px solid #c0392b; padding: 4px 14px; margin-bottom: 12px; }
+.check { display: flex; gap: 8px; align-items: center; }
+.lang { text-align: right; }
