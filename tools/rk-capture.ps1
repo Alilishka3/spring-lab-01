@@ -304,14 +304,12 @@ function Build-Copy([string]$name, [scriptblock]$patch) {
 
 Note 'lab 2 without @Primary'
 $j = Build-Copy 'no-primary' { param($d)
-    $f = Join-Path $d 'src\main\java\kz\iitu\springlab\notify\EmailNotifier.java'
-    [IO.File]::WriteAllText($f, ((Get-Content $f -Raw -Encoding UTF8) -replace '(?m)^@Primary', '// @Primary'), (New-Object Text.UTF8Encoding($false))) }
+    Copy-Item -Force (Join-Path $PSScriptRoot 'exp\no-primary\EmailNotifier.java') (Join-Path $d 'src\main\java\kz\iitu\springlab\notify\EmailNotifier.java') }
 if ($j) { $p = Start-App 'lab2-no-primary' -jarPath $j; Stop-App $p }
 
 Note 'lab 4 self-invocation before the fix'
 $j = Build-Copy 'self-invocation' { param($d)
-    $f = Join-Path $d 'src\main\java\kz\iitu\springlab\service\CatalogService.java'
-    [IO.File]::WriteAllText($f, ((Get-Content $f -Raw -Encoding UTF8) -replace 'self\.remove\(', 'remove('), (New-Object Text.UTF8Encoding($false))) }
+    Copy-Item -Force (Join-Path $PSScriptRoot 'exp\self-invocation\CatalogService.java') (Join-Path $d 'src\main\java\kz\iitu\springlab\service\CatalogService.java') }
 if ($j) {
     $p = Start-App 'lab4-before-fix' -jarPath $j
     Req 'lab4-before-fix.txt' 'DELETE /api/lab4/item/5 (external call)' @('-X', 'DELETE', "$B/api/lab4/item/5")
