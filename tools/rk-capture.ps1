@@ -69,7 +69,7 @@ $jar = $jar.FullName
 function Start-App([string]$name, [string[]]$appArgs = @(), [hashtable]$envs = @{}, [string[]]$jvmArgs = @(), [string]$jarPath = $jar) {
     foreach ($k in $envs.Keys) { [Environment]::SetEnvironmentVariable($k, $envs[$k], 'Process') }
     $log = Join-Path $ev "$name.log"
-    $all = @('-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8') + $jvmArgs + @('-jar', $jarPath) + $appArgs
+    $all = @('-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8', '-Duser.language=en', '-Duser.country=US') + $jvmArgs + @('-jar', $jarPath) + $appArgs
     $p = Start-Process -FilePath $java -ArgumentList $all -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru -NoNewWindow
     foreach ($k in $envs.Keys) { [Environment]::SetEnvironmentVariable($k, $null, 'Process') }
     for ($i = 0; $i -lt 120; $i++) {
@@ -287,9 +287,13 @@ function Build-Copy([string]$name, [scriptblock]$patch) {
     Copy-Item -Recurse (Join-Path $root 'src'), (Join-Path $root '.mvn'), (Join-Path $root 'pom.xml'), (Join-Path $root 'mvnw.cmd') $dir
     & $patch $dir
     Push-Location $dir
-    & .\mvnw.cmd -q -o -DskipTests package 2>&1 | ForEach-Object { "$_" } | Out-File (Join-Path $ev "$name-build.log") -Encoding utf8
+    $blog = Join-Path $ev "$name-build.log"
+    "dir: $dir" | Out-File $blog -Encoding utf8
+    Get-ChildItem -Force $dir | ForEach-Object { "  $($_.Name)" } | Out-File $blog -Append -Encoding utf8
+    & cmd.exe /c "mvnw.cmd -B -DskipTests package 2>&1" | ForEach-Object { "$_" } | Out-File $blog -Append -Encoding utf8
     Pop-Location
-    return (Get-ChildItem (Join-Path $dir 'target') -Filter '*.jar' | Where-Object { $_.Name -notmatch 'original' } | Select-Object -First 1).FullName
+    $built = Get-ChildItem (Join-Path $dir 'target') -Filter '*.jar' -ErrorAction SilentlyContinue | Where-Object { $_.Name -notmatch 'original' } | Select-Object -First 1
+    if ($built) { return $built.FullName } else { return $null }
 }
 
 Note 'lab 2 without @Primary'
