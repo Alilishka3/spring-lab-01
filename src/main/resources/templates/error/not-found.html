@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Not found</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head(#{error.notfound.title})}"></head>
 <body>
-<main class="container">
-    <h1>404 — not found</h1>
-    <p th:text="${message}">No book with id 999</p>
-    <p><a th:href="@{/books}">← Back to the catalogue</a></p>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+
+<main class="wrap page narrow notfound">
+    <div class="gap-shelf" aria-hidden="true"><i></i><i></i><i class="missing"></i><i></i></div>
+    <h1 th:text="#{error.notfound.title}">Book not found</h1>
+    <p class="lead" th:text="${message}">No book with id 999</p>
+    <p th:text="#{error.notfound.text}">The catalogue has no book with this number.</p>
+    <a class="btn btn-primary" th:href="@{/books}" th:text="#{details.back}">Back to the catalogue</a>
 </main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

@@ -2,15 +2,148 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Spring Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spring Lab Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<main class="container">
-    <h1>Spring Lab · Laboratory work 5</h1>
-    <p>Altai Ali, IT1-2409IS</p>
-    <p><a href="/books">Open the catalogue →</a></p>
-    <p><a href="/api/books">GET /api/books (JSON)</a></p>
+<header class="site-header">
+    <div class="wrap header-row">
+        <a class="brand" href="/">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Spring Lab Library</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+            <a href="/" class="is-active">Home</a>
+            <a href="/books">Catalogue</a>
+            <a href="/books/new">Add a book</a>
+            <a href="/swagger-ui.html">API docs</a>
+        </nav>
+    </div>
+</header>
+
+<main class="wrap">
+    <section class="hero">
+        <div>
+            <h1>A small library, built one lab at a time</h1>
+            <p>A book catalogue on Spring Boot 4: browse the shelf, add and edit books through a validated
+               form in English or Russian, or work with the same data through a documented REST API.</p>
+            <p class="course">RWPSF 3305 midterm project. Altai Ali, IT1-2409IS, IITU.</p>
+            <div class="actions">
+                <a class="btn btn-primary" href="/books">Open the catalogue</a>
+                <a class="btn btn-quiet" href="/swagger-ui.html">Try the API</a>
+            </div>
+        </div>
+        <!-- Filled from GET /api/books by the script below: the same JSON any API client gets. -->
+        <div class="shelf" id="shelf" aria-label="Books on the shelf"></div>
+    </section>
+
+    <section aria-labelledby="labs-h" style="padding-bottom: 64px">
+        <h2 id="labs-h">How the project grew</h2>
+        <p class="lead">Every laboratory work added one layer to the same application. The links open the live endpoints.</p>
+        <ol class="labs">
+            <li class="lab">
+                <span class="lab-no">1</span>
+                <div><h3>The first Spring Boot application</h3>
+                    <p>Project from Spring Initializr, a REST controller, settings in a properties file. Variant 2: string reversal.</p></div>
+                <div class="lab-links">
+                    <a href="/api/hello?name=IITU">/api/hello</a>
+                    <a href="/api/info">/api/info</a>
+                    <a href="/api/reverse?text=Spring">/api/reverse</a>
+                </div>
+            </li>
+            <li class="lab">
+                <span class="lab-no">2</span>
+                <div><h3>The IoC container</h3>
+                    <p>Beans, constructor injection, @Primary and @Qualifier, life cycle, singleton and prototype. Variant 2: the reversed notifier.</p></div>
+                <div class="lab-links">
+                    <a href="/api/lab2/notify?text=IITU">/notify</a>
+                    <a href="/api/lab2/lifecycle">/lifecycle</a>
+                    <a href="/api/lab2/scopes">/scopes</a>
+                    <a href="/api/lab2/custom?text=Spring">/custom</a>
+                </div>
+            </li>
+            <li class="lab">
+                <span class="lab-no">3</span>
+                <div><h3>Configuration and profiles</h3>
+                    <p>application.yml, dev and prod profiles, typed and validated @ConfigurationProperties, Actuator. Variant 2: app.pagination.</p></div>
+                <div class="lab-links">
+                    <a href="/api/lab3/config">/api/lab3/config</a>
+                    <a href="/actuator/env/app.mail.retry-count">/actuator/env</a>
+                    <a href="/actuator/health">/actuator/health</a>
+                </div>
+            </li>
+            <li class="lab">
+                <span class="lab-no">4</span>
+                <div><h3>Spring AOP</h3>
+                    <p>Logging, timing and audit aspects, their order, the CGLIB proxy and self-invocation. Variant 1: the call counter.</p></div>
+                <div class="lab-links">
+                    <a href="/api/lab4/items?limit=5">/items</a>
+                    <a href="/api/lab4/proxy">/proxy</a>
+                    <a href="/api/lab4/stats">/stats</a>
+                </div>
+            </li>
+            <li class="lab">
+                <span class="lab-no">5</span>
+                <div><h3>Spring MVC</h3>
+                    <p>REST and page controllers, request parameters, status codes, the model, static resources. Variant 1: title search.</p></div>
+                <div class="lab-links">
+                    <a href="/books">/books</a>
+                    <a href="/books?author=Bloch">/books?author=Bloch</a>
+                    <a href="/api/books/search?title=java">/search?title=java</a>
+                </div>
+            </li>
+            <li class="lab">
+                <span class="lab-no">6</span>
+                <div><h3>Forms and validation</h3>
+                    <p>Thymeleaf form binding, Bean Validation, messages in two languages, @ControllerAdvice. Variant 1: the ISBN check digit.</p></div>
+                <div class="lab-links">
+                    <a href="/books/new">/books/new</a>
+                    <a href="/books/new?lang=ru">?lang=ru</a>
+                    <a href="/books/999">/books/999</a>
+                </div>
+            </li>
+            <li class="lab">
+                <span class="lab-no">7</span>
+                <div><h3>REST API</h3>
+                    <p>DTOs and a mapper, 201 with Location, 204, 404 and 409 as problem details, OpenAPI with Swagger UI. Variant 1: paging.</p></div>
+                <div class="lab-links">
+                    <a href="/api/books">/api/books</a>
+                    <a href="/api/books?page=0&amp;size=5">?page=0&amp;size=5</a>
+                    <a href="/api/books/999">/api/books/999</a>
+                    <a href="/swagger-ui.html">Swagger UI</a>
+                </div>
+            </li>
+        </ol>
+    </section>
 </main>
+
+<footer class="site-footer">
+    <div class="wrap">RWPSF 3305 Web Application Development with Spring Framework. Midterm project by Altai Ali, IT1-2409IS, IITU.</div>
+</footer>
+
+<script>
+    // Draw the shelf from the REST API (lab 7). The page itself is a static resource (lab 5).
+    fetch('/api/books')
+        .then(r => r.json())
+        .then(books => {
+            const shelf = document.getElementById('shelf');
+            books.forEach(b => {
+                const a = document.createElement('a');
+                a.className = 'spine g-' + (b.genre ? b.genre.toLowerCase() : 'none');
+                a.href = '/books/' + b.id;
+                a.title = b.title + ', ' + b.author;
+                a.style.setProperty('--h', (168 + (b.id * 37) % 64) + 'px');
+                const t = document.createElement('span'); t.className = 'spine-title'; t.textContent = b.title;
+                const y = document.createElement('span'); y.className = 'spine-year'; y.textContent = b.year;
+                a.append(t, y);
+                shelf.append(a);
+            });
+        })
+        .catch(() => { document.getElementById('shelf').hidden = true; });
+</script>
 </body>
 </html>

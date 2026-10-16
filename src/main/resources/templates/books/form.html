@@ -1,46 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="#{book.new}">New book</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head(${bookId} != null ? #{book.edit} : #{book.new})}"></head>
 <body>
-<main class="container">
-    <p class="lang"><a href="?lang=en">EN</a> · <a href="?lang=ru">RU</a></p>
-    <h1 th:text="#{book.new}">New book</h1>
+<header th:replace="~{fragments/layout :: header(${bookId} != null ? 'books' : 'form')}"></header>
 
-    <div class="alert" th:if="${#fields.hasAnyErrors()}">
-        <ul><li th:each="e : ${#fields.allErrors()}" th:text="${e}"></li></ul>
+<main class="wrap page narrow">
+    <h1 th:text="${bookId} != null ? #{book.edit} : #{book.new}">New book</h1>
+
+    <div class="alert" th:if="${#fields.hasAnyErrors()}" role="alert">
+        <p th:text="#{form.errors}">Fix the highlighted fields and save again.</p>
+        <ul><li th:each="e : ${#fields.allErrors()}" th:text="${e}">The title must not be empty</li></ul>
     </div>
 
-    <form th:action="@{/books}" th:object="${form}" method="post" class="form">
-        <label th:text="#{book.title}">Title</label>
-        <input type="text" th:field="*{title}" th:errorclass="is-invalid">
-        <span class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+    <form class="form" method="post" novalidate
+          th:action="${bookId} != null ? @{/books/{id}(id=${bookId})} : @{/books}" th:object="${form}">
 
-        <label th:text="#{book.author}">Author</label>
-        <input type="text" th:field="*{author}" th:errorclass="is-invalid">
-        <span class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></span>
+        <div class="field">
+            <label for="title" th:text="#{book.title}">Title</label>
+            <input type="text" th:field="*{title}" th:errorclass="is-invalid">
+            <span class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+        </div>
 
-        <label th:text="#{book.year}">Year</label>
-        <input type="number" th:field="*{year}" th:errorclass="is-invalid">
-        <span class="error" th:if="${#fields.hasErrors('year')}" th:errors="*{year}"></span>
+        <div class="field">
+            <label for="author" th:text="#{book.author}">Author</label>
+            <input type="text" th:field="*{author}" th:errorclass="is-invalid">
+            <span class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></span>
+        </div>
 
-        <label th:text="#{book.genre}">Genre</label>
-        <select th:field="*{genre}" th:errorclass="is-invalid">
-            <option value="">—</option>
-            <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
-        </select>
-        <span class="error" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+        <div class="field-row">
+            <div class="field">
+                <label for="year" th:text="#{book.year}">Year</label>
+                <input type="number" th:field="*{year}" th:errorclass="is-invalid">
+                <span class="error" th:if="${#fields.hasErrors('year')}" th:errors="*{year}"></span>
+            </div>
+            <div class="field">
+                <label for="genre" th:text="#{book.genre}">Genre</label>
+                <select th:field="*{genre}" th:errorclass="is-invalid">
+                    <option value="">—</option>
+                    <option th:each="g : ${genres}" th:value="${g}" th:text="#{${'genre.' + g}}">Programming</option>
+                </select>
+                <span class="error" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+            </div>
+        </div>
 
-        <label th:text="#{book.isbn}">ISBN</label>
-        <input type="text" th:field="*{isbn}" th:errorclass="is-invalid" placeholder="978-0134685991">
-        <span class="error" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></span>
+        <div class="field">
+            <label for="isbn" th:text="#{book.isbn}">ISBN</label>
+            <input type="text" th:field="*{isbn}" th:errorclass="is-invalid" placeholder="978-0134685991">
+            <span class="hint" th:text="#{book.isbn.hint}">10 or 13 digits</span>
+            <span class="error" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></span>
+        </div>
 
         <label class="check"><input type="checkbox" th:field="*{available}"> <span th:text="#{book.available}">Available</span></label>
-        <button type="submit" th:text="#{form.submit}">Save</button>
+
+        <div class="actions">
+            <button class="btn btn-primary" type="submit" th:text="#{form.submit}">Save</button>
+            <a class="btn btn-quiet" th:href="${bookId} != null ? @{/books/{id}(id=${bookId})} : @{/books}" th:text="#{form.cancel}">Cancel</a>
+        </div>
     </form>
 </main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

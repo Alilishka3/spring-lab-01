@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${pageTitle} + ' — Spring Lab Library'">Spring Lab Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header th:fragment="header(active)" class="site-header">
+    <div class="wrap header-row">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span th:text="#{site.name}">Spring Lab Library</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+            <a th:href="@{/}" th:text="#{nav.home}">Home</a>
+            <a th:href="@{/books}" th:text="#{nav.catalogue}" th:classappend="${active == 'books'} ? 'is-active'">Catalogue</a>
+            <a th:href="@{/books/new}" th:text="#{nav.add}" th:classappend="${active == 'form'} ? 'is-active'">Add a book</a>
+            <a th:href="@{/swagger-ui.html}" th:text="#{nav.api}">API docs</a>
+        </nav>
+        <div class="lang" aria-label="Language">
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'is-active'">EN</a>
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'is-active'">RU</a>
+        </div>
+    </div>
+</header>
+
+<div th:fragment="flash" th:if="${messageKey}" class="flash" role="status"
+     th:text="#{${messageKey}(${messageArg})}">Book has been added</div>
+
+<footer th:fragment="footer" class="site-footer">
+    <div class="wrap" th:text="#{footer.text}">RWPSF 3305</div>
+</footer>
+
+</body>
+</html>

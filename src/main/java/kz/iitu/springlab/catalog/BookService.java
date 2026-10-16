@@ -28,6 +28,15 @@ public class BookService {
                 .toList();
     }
 
+    /** Catalogue page: author, title fragment and genre combined; every argument is optional. */
+    public List<Book> search(String author, String title, Genre genre) {
+        String titleNeedle = title == null ? "" : title.trim().toLowerCase(Locale.ROOT);
+        return findAll(author).stream()
+                .filter(b -> b.title().toLowerCase(Locale.ROOT).contains(titleNeedle))
+                .filter(b -> genre == null || genre == b.genre())
+                .toList();
+    }
+
     /** Lab 5, variant 1: case-insensitive search by a fragment of the title. */
     public List<Book> searchByTitle(String fragment) {
         String needle = fragment == null ? "" : fragment.trim().toLowerCase(Locale.ROOT);

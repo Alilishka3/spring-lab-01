@@ -1,16 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${book.title}">Book</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head(${book.title})}"></head>
 <body>
-<main class="container">
-    <h1 th:text="${book.title}">Title</h1>
-    <p><b th:text="${book.author}">Author</b>, <span th:text="${book.year}">2020</span></p>
-    <p>Genre: <span th:text="${book.genre}">NOVEL</span> · ISBN: <span th:text="${book.isbn} ?: '—'">978…</span></p>
-    <p><a th:href="@{/books}">← Back to the catalogue</a></p>
+<header th:replace="~{fragments/layout :: header('books')}"></header>
+
+<main class="wrap page">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+    <a class="back" th:href="@{/books}" th:text="#{details.back}">Back to the catalogue</a>
+
+    <article class="book">
+        <div class="cover" th:classappend="${book.genre != null} ? 'g-' + ${#strings.toLowerCase(book.genre)} : 'g-none'" aria-hidden="true">
+            <span class="cover-title" th:text="${book.title}">Effective Java</span>
+            <span class="cover-author" th:text="${book.author}">Joshua Bloch</span>
+        </div>
+        <div class="book-body">
+            <h1 th:text="${book.title}">Effective Java</h1>
+            <p class="byline"><span th:text="${book.author}">Joshua Bloch</span>, <span th:text="${book.year}">2018</span></p>
+            <dl class="facts">
+                <dt th:text="#{book.genre}">Genre</dt>
+                <dd th:text="${book.genre != null} ? #{${'genre.' + book.genre}} : '—'">Programming</dd>
+                <dt th:text="#{book.isbn}">ISBN</dt>
+                <dd class="isbn" th:text="${book.isbn} ?: #{details.noisbn}">9780134685991</dd>
+                <dt th:text="#{details.added}">Added</dt>
+                <dd th:text="${#temporals.format(createdAt, 'dd.MM.yyyy HH:mm')}">16.10.2026 19:00</dd>
+                <dt>API</dt>
+                <dd><a th:href="@{/api/books/{id}(id=${book.id})}" th:text="#{details.json}">Same record as JSON</a></dd>
+            </dl>
+            <div class="actions">
+                <a class="btn btn-primary" th:href="@{/books/{id}/edit(id=${book.id})}" th:text="#{details.edit}">Edit</a>
+                <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post"
+                      th:attr="data-confirm=#{details.delete.confirm}" onsubmit="return confirm(this.dataset.confirm)">
+                    <button class="btn btn-danger" type="submit" th:text="#{details.delete}">Delete</button>
+                </form>
+            </div>
+        </div>
+    </article>
 </main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

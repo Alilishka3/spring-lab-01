@@ -1,24 +1,91 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${title}">Catalogue</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head th:replace="~{fragments/layout :: head(#{list.title})}"></head>
 <body>
-<main class="container">
-    <h1 th:text="${title}">Catalogue</h1>
-    <p th:if="${message}" class="flash" th:text="${message}"></p>
-    <p th:if="${author}">Filtered by author: <b th:text="${author}">Bloch</b> · <a href="/books">reset</a></p>
-    <table>
-        <tr><th>#</th><th>Title</th><th>Author</th><th>Year</th></tr>
-        <tr th:each="book : ${books}">
-            <td th:text="${book.id}">1</td>
-            <td th:text="${book.title}">Title</td>
-            <td th:text="${book.author}">Author</td>
-            <td th:text="${book.year}">2020</td>
-        </tr>
-    </table>
+<header th:replace="~{fragments/layout :: header('books')}"></header>
+
+<main class="wrap page">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="page-head">
+        <div>
+            <h1 th:text="#{list.title}">Catalogue</h1>
+            <p class="lead" th:text="#{list.count(${#lists.size(books)}, ${total})}">11 of 11 books</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/books/new}" th:text="#{nav.add}">Add a book</a>
+    </div>
+
+    <form class="filters" th:action="@{/books}" method="get">
+        <label>
+            <span th:text="#{list.filter.author}">Author</span>
+            <input type="text" name="author" th:value="${author}" placeholder="Bloch">
+        </label>
+        <label>
+            <span th:text="#{list.filter.title}">Title contains</span>
+            <input type="text" name="q" th:value="${q}" placeholder="java">
+        </label>
+        <label>
+            <span th:text="#{list.filter.genre}">Genre</span>
+            <select name="genre">
+                <option value="" th:text="#{list.filter.any}">Any genre</option>
+                <option th:each="g : ${genres}" th:value="${g}" th:text="#{${'genre.' + g}}"
+                        th:selected="${g == genre}">Programming</option>
+            </select>
+        </label>
+        <div class="filter-actions">
+            <button class="btn btn-primary" type="submit" th:text="#{list.filter.apply}">Apply filters</button>
+            <a class="btn btn-quiet" th:if="${filtered}" th:href="@{/books}" th:text="#{list.filter.reset}">Clear</a>
+        </div>
+    </form>
+
+    <p class="empty" th:if="${#lists.isEmpty(books)}" th:text="#{list.empty}">No books match.</p>
+
+    <section th:unless="${#lists.isEmpty(books)}" aria-labelledby="shelf-h">
+        <h2 id="shelf-h" class="section-title" th:text="#{list.shelf}">On the shelf</h2>
+        <div class="shelf">
+            <a th:each="book : ${books}" class="spine"
+               th:classappend="${book.genre != null} ? 'g-' + ${#strings.toLowerCase(book.genre)} : 'g-none'"
+               th:href="@{/books/{id}(id=${book.id})}"
+               th:style="'--h:' + ${168 + (book.id * 37) % 64} + 'px'"
+               th:title="${book.title} + ', ' + ${book.author}">
+                <span class="spine-title" th:text="${book.title}">Effective Java</span>
+                <span class="spine-year" th:text="${book.year}">2018</span>
+            </a>
+        </div>
+        <ul class="legend">
+            <li th:each="g : ${genres}"><i th:class="'dot g-' + ${#strings.toLowerCase(g)}"></i><span th:text="#{${'genre.' + g}}">Programming</span></li>
+        </ul>
+    </section>
+
+    <section th:unless="${#lists.isEmpty(books)}" aria-labelledby="table-h">
+        <h2 id="table-h" class="section-title" th:text="#{list.table}">All records</h2>
+        <div class="table-scroll">
+            <table class="records">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th th:text="#{book.title}">Title</th>
+                    <th th:text="#{book.author}">Author</th>
+                    <th th:text="#{book.year}">Year</th>
+                    <th th:text="#{book.genre}">Genre</th>
+                    <th th:text="#{book.isbn}">ISBN</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book : ${books}">
+                    <td class="num" th:text="${book.id}">1</td>
+                    <td><a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}">Effective Java</a></td>
+                    <td th:text="${book.author}">Joshua Bloch</td>
+                    <td class="num" th:text="${book.year}">2018</td>
+                    <td><span th:if="${book.genre != null}" class="tag" th:classappend="'g-' + ${#strings.toLowerCase(book.genre)}" th:text="#{${'genre.' + book.genre}}">Programming</span></td>
+                    <td class="isbn" th:text="${book.isbn} ?: '—'">9780134685991</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>
