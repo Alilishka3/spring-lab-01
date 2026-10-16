@@ -75,7 +75,7 @@ function Start-App([string]$name, [string[]]$appArgs = @(), [hashtable]$envs = @
     for ($i = 0; $i -lt 120; $i++) {
         Start-Sleep -Milliseconds 500
         if ($p.HasExited) { break }
-        if ((Test-Path $log) -and (Select-String -Path $log -Pattern 'Started SpringLab01Application' -Quiet)) { break }
+        if ((Test-Path $log) -and (Select-String -Path $log -Pattern 'Started SpringLab01Application|Tomcat started on port' -Quiet)) { break }
     }
     Start-Sleep -Milliseconds 700
     return $p
