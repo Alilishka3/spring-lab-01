@@ -197,7 +197,7 @@ Req 'lab5-errors.txt' 'DELETE /api/books (no identifier)' @('-X', 'DELETE', "$B/
 Req 'lab5-errors.txt' 'POST /api/books with Content-Type: text/plain' @('-X', 'POST', '-H', 'Content-Type: text/plain', '--data-binary', $pro, "$B/api/books")
 Req 'lab5-errors.txt' 'GET /api/books with Accept: application/xml' @('-H', 'Accept: application/xml', "$B/api/books")
 Req 'lab5-variant.txt' 'search: java' @("$B/api/books/search?title=java")
-Req 'lab5-variant.txt' 'search: CODE (case-insensitive)' @("$B/api/books/search?title=CODE")
+Req 'lab5-variant.txt' 'search: SPRING (case-insensitive)' @("$B/api/books/search?title=SPRING")
 Req 'lab5-variant.txt' 'search: nothing matches' @("$B/api/books/search?title=kotlin")
 Req 'lab5-static.txt' 'GET /css/app.css (no controller)' @('-I', "$B/css/app.css")
 
@@ -221,7 +221,7 @@ Req 'lab6-prg.txt' 'POST /books (valid form) — no -L, shows the 302' @('-X', '
 Note 'lab 7 api'
 $valid = Body 'valid.json' '{"title":"Domain-Driven Design","author":"Eric Evans","year":2003,"genre":"PROGRAMMING","isbn":"978-0321125217"}'
 $empty = Body 'empty-title.json' '{"title":"","author":"Eric Evans","year":2003,"genre":"PROGRAMMING"}'
-$dupe = Body 'duplicate.json' '{"title":"Clean Code","author":"Robert Martin","year":2008,"genre":"PROGRAMMING"}'
+$dupe = Body 'duplicate.json' '{"title":"Spring in Action","author":"Craig Walls","year":2022,"genre":"PROGRAMMING"}'
 Req 'lab7-crud.txt' 'GET /api/books' @("$B/api/books")
 Req 'lab7-crud.txt' 'GET /api/books/1' @("$B/api/books/1")
 Req 'lab7-crud.txt' 'GET /api/books/999' @("$B/api/books/999")
