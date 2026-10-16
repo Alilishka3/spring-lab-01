@@ -305,13 +305,13 @@ function Build-Copy([string]$name, [scriptblock]$patch) {
 Note 'lab 2 without @Primary'
 $j = Build-Copy 'no-primary' { param($d)
     $f = Join-Path $d 'src\main\java\kz\iitu\springlab\notify\EmailNotifier.java'
-    (Get-Content $f -Raw) -replace '(?m)^@Primary', '// @Primary' | Set-Content $f -Encoding utf8 }
+    [IO.File]::WriteAllText($f, ((Get-Content $f -Raw -Encoding UTF8) -replace '(?m)^@Primary', '// @Primary'), (New-Object Text.UTF8Encoding($false))) }
 if ($j) { $p = Start-App 'lab2-no-primary' -jarPath $j; Stop-App $p }
 
 Note 'lab 4 self-invocation before the fix'
 $j = Build-Copy 'self-invocation' { param($d)
     $f = Join-Path $d 'src\main\java\kz\iitu\springlab\service\CatalogService.java'
-    (Get-Content $f -Raw) -replace 'self\.remove\(', 'remove(' | Set-Content $f -Encoding utf8 }
+    [IO.File]::WriteAllText($f, ((Get-Content $f -Raw -Encoding UTF8) -replace 'self\.remove\(', 'remove('), (New-Object Text.UTF8Encoding($false))) }
 if ($j) {
     $p = Start-App 'lab4-before-fix' -jarPath $j
     Req 'lab4-before-fix.txt' 'DELETE /api/lab4/item/5 (external call)' @('-X', 'DELETE', "$B/api/lab4/item/5")
