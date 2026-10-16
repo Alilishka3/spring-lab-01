@@ -1,6 +1,9 @@
 spring:
   application:
     name: spring-lab
+  messages:
+    basename: messages
+    fallback-to-system-locale: false   # en -> messages.properties, not the OS locale (ru)
 server:
   port: 8080
 app:

@@ -7,13 +7,14 @@
 <main class="wrap page narrow">
     <h1 th:text="${bookId} != null ? #{book.edit} : #{book.new}">New book</h1>
 
+    <div th:object="${form}">
     <div class="alert" th:if="${#fields.hasAnyErrors()}" role="alert">
         <p th:text="#{form.errors}">Fix the highlighted fields and save again.</p>
         <ul><li th:each="e : ${#fields.allErrors()}" th:text="${e}">The title must not be empty</li></ul>
     </div>
 
     <form class="form" method="post" novalidate
-          th:action="${bookId} != null ? @{/books/{id}(id=${bookId})} : @{/books}" th:object="${form}">
+          th:action="${bookId} != null ? @{/books/{id}(id=${bookId})} : @{/books}">
 
         <div class="field">
             <label for="title" th:text="#{book.title}">Title</label>
@@ -57,6 +58,7 @@
             <a class="btn btn-quiet" th:href="${bookId} != null ? @{/books/{id}(id=${bookId})} : @{/books}" th:text="#{form.cancel}">Cancel</a>
         </div>
     </form>
+    </div>
 </main>
 
 <footer th:replace="~{fragments/layout :: footer}"></footer>
