@@ -2,6 +2,7 @@
 # the console logs, HTTP responses and page screenshots into .\rk-evidence
 # Usage (from the project folder):  powershell -ExecutionPolicy Bypass -File tools\rk-capture.ps1
 
+param([string]$Only = '')
 $ErrorActionPreference = 'Continue'
 [Console]::OutputEncoding = [Text.Encoding]::UTF8
 $OutputEncoding = [Text.Encoding]::UTF8
@@ -26,7 +27,7 @@ if (Test-Path $bundle) {
     git reset -q
 }
 $ev = Join-Path $root 'rk-evidence'
-Remove-Item -Recurse -Force $ev -ErrorAction SilentlyContinue
+if ($Only -ne 'experiments') { Remove-Item -Recurse -Force $ev -ErrorAction SilentlyContinue }
 New-Item -ItemType Directory -Force -Path $ev | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $ev 'shots') | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $ev 'html') | Out-Null
@@ -43,6 +44,7 @@ if (-not $env:JAVA_HOME -and $jdk) { $env:JAVA_HOME = $jdk.FullName }
 if ($env:JAVA_HOME) { $java = Join-Path $env:JAVA_HOME 'bin\java.exe'; $env:Path = "$env:JAVA_HOME\bin;$env:Path" }
 Note "java: $java"
 
+if ($Only -ne 'experiments') {
 # ---------- environment (lab 1, task 1) ----------
 $envFile = Join-Path $ev 'env.txt'
 "PS> java -version" | Out-File $envFile -Encoding utf8
@@ -58,6 +60,7 @@ git config --list 2>&1 | Select-String 'user\.' | ForEach-Object { "$_" } | Out-
 
 git log --oneline --graph --all --decorate 2>&1 | ForEach-Object { "$_" } | Out-File (Join-Path $ev 'git-log.txt') -Encoding utf8
 
+}
 # ---------- build ----------
 Note 'building the jar'
 & .\mvnw.cmd -q -DskipTests clean package 2>&1 | ForEach-Object { "$_" } | Out-File (Join-Path $ev 'build.log') -Encoding utf8
@@ -123,6 +126,7 @@ function PostForm([string]$jar, [string]$url, [string]$data, [switch]$follow) {
     return (& curl.exe @a 2>&1 | Out-String)
 }
 
+if ($Only -ne 'experiments') {
 # =====================================================================
 # RUN A — no profile: labs 1, 2, 3, 4, 5, 6, 7
 # =====================================================================
@@ -277,6 +281,8 @@ Note 'lab 3 --debug'
 $p = Start-App 'lab3-debug' @('--debug')
 Stop-App $p
 
+}
+
 # =====================================================================
 # Experiments that need a code change: done on a temporary copy
 # =====================================================================
@@ -290,7 +296,7 @@ function Build-Copy([string]$name, [scriptblock]$patch) {
     $blog = Join-Path $ev "$name-build.log"
     "dir: $dir" | Out-File $blog -Encoding utf8
     Get-ChildItem -Force $dir | ForEach-Object { "  $($_.Name)" } | Out-File $blog -Append -Encoding utf8
-    & cmd.exe /c "mvnw.cmd -B -DskipTests package 2>&1" | ForEach-Object { "$_" } | Out-File $blog -Append -Encoding utf8
+    & cmd.exe /c "cd /d `"$dir`" && mvnw.cmd -B -DskipTests package 2>&1" | ForEach-Object { "$_" } | Out-File $blog -Append -Encoding utf8
     Pop-Location
     $built = Get-ChildItem (Join-Path $dir 'target') -Filter '*.jar' -ErrorAction SilentlyContinue | Where-Object { $_.Name -notmatch 'original' } | Select-Object -First 1
     if ($built) { return $built.FullName } else { return $null }
