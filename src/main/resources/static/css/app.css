@@ -1,0 +1,9 @@
+body { font-family: "Segoe UI", Arial, sans-serif; background: #f6f3ee; color: #1d2433; margin: 0; }
+.container { max-width: 900px; margin: 40px auto; padding: 0 16px; }
+h1 { color: #2f5d50; }
+table { width: 100%; border-collapse: collapse; background: #fff; }
+th, td { padding: 10px 14px; border: 1px solid #e2dccf; text-align: left; }
+th { background: #2f5d50; color: #fff; }
+tr:nth-child(even) td { background: #faf8f4; }
+.flash { background: #e3f1ea; border-left: 4px solid #2f5d50; padding: 10px 14px; }
+a { color: #2f5d50; }
