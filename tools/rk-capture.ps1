@@ -88,7 +88,11 @@ function Req([string]$file, [string]$title, [string[]]$curlArgs) {
     $out = & curl.exe -s -i --max-time 20 @curlArgs 2>&1 | Out-String
     $shown = ($curlArgs | ForEach-Object { if ($_ -match '\s') { "`"$_`"" } else { $_ } }) -join ' '
     $block = "### $title`r`n`$ curl -i $shown`r`n$out`r`n"
-    Add-Content -Path (Join-Path $ev $file) -Value $block -Encoding UTF8
+    $path = Join-Path $ev $file
+    for ($try = 0; $try -lt 20; $try++) {      # antivirus may hold the file for a moment
+        try { [IO.File]::AppendAllText($path, $block, (New-Object Text.UTF8Encoding($false))); break }
+        catch { Start-Sleep -Milliseconds 250 }
+    }
 }
 function Body([string]$name, [string]$json) {
     $path = Join-Path $bodies $name
