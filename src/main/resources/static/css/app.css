@@ -40,7 +40,8 @@ body {
     flex-direction: column;
 }
 
-main { flex: 1; }
+main { flex: 1; min-width: 0; }
+.site-header, .site-footer { min-width: 0; }
 
 h1, h2, h3 { font-family: var(--serif); font-weight: 700; line-height: 1.15; margin: 0 0 .4em; }
 h1 { font-size: 2.6rem; letter-spacing: -0.01em; }
@@ -117,6 +118,7 @@ input:focus, select:focus { outline: none; border-color: var(--lamp); box-shadow
 
 /* The shelf: the one bold element of the site. Every spine is a link to its book. */
 .shelf {
+    max-width: 100%;
     display: flex; align-items: flex-end; gap: 5px; overflow-x: auto;
     padding: 24px 22px 0; min-height: 260px;
     background: var(--card);
