@@ -2,6 +2,7 @@ package kz.iitu.springlab.catalog;
 
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,9 @@ public class BookRepository {
     private final AtomicLong sequence = new AtomicLong();
 
     public BookRepository() {                       // three records to start with
-        save(new Book(null, "Effective Java", "Joshua Bloch", 2018, Genre.PROGRAMMING, "9780134685991"));
-        save(new Book(null, "Clean Code", "Robert Martin", 2008, Genre.PROGRAMMING, "9780132350884"));
-        save(new Book(null, "Spring in Action", "Craig Walls", 2022, Genre.PROGRAMMING, "9781617297571"));
+        save(new Book(null, "Effective Java", "Joshua Bloch", 2018, Genre.PROGRAMMING, "9780134685991", null));
+        save(new Book(null, "Clean Code", "Robert Martin", 2008, Genre.PROGRAMMING, "9780132350884", null));
+        save(new Book(null, "Spring in Action", "Craig Walls", 2022, Genre.PROGRAMMING, "9781617297571", null));
     }
 
     public List<Book> findAll() {
@@ -33,10 +34,15 @@ public class BookRepository {
 
     public Book save(Book book) {
         long id = book.id() != null ? book.id() : sequence.incrementAndGet();
+        Instant createdAt = book.createdAt() != null ? book.createdAt() : Instant.now();
         Book stored = new Book(id, book.title(), book.author(), book.year(),
-                book.genre(), book.isbn());
+                book.genre(), book.isbn(), createdAt);
         storage.put(id, stored);
         return stored;
+    }
+
+    public long count() {
+        return storage.size();
     }
 
     public boolean deleteById(long id) {

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kz.iitu.springlab.catalog.Book;
 import kz.iitu.springlab.catalog.BookService;
 import kz.iitu.springlab.catalog.Genre;
+import kz.iitu.springlab.service.DuplicateTitleException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,8 +51,15 @@ public class BookPageController {
             model.addAttribute("genres", Genre.values());     // the model again
             return "books/form";
         }
-        Book saved = service.create(new Book(null, form.getTitle(), form.getAuthor(),
-                form.getYear(), form.getGenre(), form.getIsbn()));
+        Book saved;
+        try {
+            saved = service.create(new Book(null, form.getTitle(), form.getAuthor(),
+                    form.getYear(), form.getGenre(), form.getIsbn(), null));
+        } catch (DuplicateTitleException ex) {
+            binding.reject("book.duplicate", ex.getMessage());   // a global error
+            model.addAttribute("genres", Genre.values());
+            return "books/form";
+        }
         redirect.addFlashAttribute("message",
                 "Book «" + saved.title() + "» has been added");
         return "redirect:/books";
